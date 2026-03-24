@@ -65,6 +65,17 @@ ICORELEVEL = 1
 ICHARG = 11
 """
 
+VASP_SH_CONTENT = """#!/bin/bash
+#SBATCH -N 1
+#SBATCH -n 56
+#SBATCH -p cp6
+
+module add vasp
+EXE=vasp # choose one vasp version to run. e.g. vasp / vasp_ncl / vasp_gam / vasp_neb ...
+
+yhrun vasp
+"""
+
 processed = 0
 
 # ================= 1️⃣ 准备 undef/band =================
@@ -127,13 +138,16 @@ for sd in strain_dirs:
     else:
         print(f"⚠️ {sd}/scf/CHGCAR 不存在，band 将从头算电荷")
 
-    # POTCAR & vasp.sh
+    # POTCAR
     shutil.copy(os.path.join(opt_dir, "POTCAR"), band_dir)
-    shutil.copy(os.path.join(opt_dir, "vasp.sh"), band_dir)
 
     # INCAR
     with open(os.path.join(band_dir, "INCAR"), "w") as f:
         f.write(INCAR_CONTENT)
+
+    # vasp.sh
+    with open(os.path.join(band_dir, "vasp.sh"), "w") as f:
+        f.write(VASP_SH_CONTENT)
 
     # KPOINTS（统一来自 undef/band）
     dst_kpoints = os.path.join(band_dir, "KPOINTS")

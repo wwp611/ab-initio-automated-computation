@@ -72,6 +72,17 @@ EDIFF  = 1E-08
 ICORELEVEL = 1
 """
 
+VASP_SH_CONTENT = """#!/bin/bash
+#SBATCH -N 1
+#SBATCH -n 56
+#SBATCH -p cp6
+
+module add vasp
+EXE=vasp # choose one vasp version to run. e.g. vasp / vasp_ncl / vasp_gam / vasp_neb ...
+
+yhrun vasp
+"""
+
 # ================= 读取 opt/CONTCAR =================
 with open(contcar) as f:
     lines = [l.rstrip() for l in f.readlines()]
@@ -85,7 +96,7 @@ with open(os.path.join(opt_dir, "KPOINTS")) as f:
     kp = [l.rstrip() for l in f.readlines()]
 
 kmesh = list(map(int, kp[3].split()))
-kp[3] = "  " + "  ".join(str(2 * k - 1) for k in kmesh)
+kp[3] = "  " + "  ".join(str(2 * k) for k in kmesh)
 
 # ================= 为每个应变生成 SCF 文件 =================
 for name, eps in strain_map.items():
@@ -104,15 +115,17 @@ for name, eps in strain_map.items():
         for l in rest:
             f.write(l + "\n")
 
-    # --- 复制 POTCAR, INCAR, KPOINTS, vasp.sh ---
+    # --- 复制 POTCAR，写 INCAR、KPOINTS、vasp.sh ---
     shutil.copy(os.path.join(opt_dir, "POTCAR"), scf_dir)
-    shutil.copy(os.path.join(opt_dir, "vasp.sh"), scf_dir)
 
     with open(os.path.join(scf_dir, "INCAR"), "w") as f:
         f.write(INCAR_CONTENT)
 
     with open(os.path.join(scf_dir, "KPOINTS"), "w") as f:
         f.write("\n".join(kp) + "\n")
+
+    with open(os.path.join(scf_dir, "vasp.sh"), "w") as f:
+        f.write(VASP_SH_CONTENT)
 
     print(f"  ✅ {name}/scf 完成（strain {eps:+.3f}）")
 
