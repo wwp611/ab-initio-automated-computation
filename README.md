@@ -96,14 +96,14 @@ bash dp_pipeline/submit_dp_band.sh <material>
   - `debug_band.sh`：批量修改并重提能带（band）计算
 
 ### 用法
-- scf
-  bash debug_scf.sh 材料名
-  bash debug_scf.sh 材料名 undef 0.02P
+- SCF
+  - `bash debug_scf.sh 材料名`
+  - `bash debug_scf.sh 材料名 undef 0.02P`
 
 - BAND
-  bash debug_band.sh 材料名
-  bash debug_band.sh 材料名 undef 0.02P
-  
+  - `bash debug_band.sh 材料名`
+  - `bash debug_band.sh 材料名 undef 0.02P`
+
 ## 可配置项
 - `dp_pipeline/auto_calcu.py`
   - `N_BATCH`：每轮提交的材料数。
