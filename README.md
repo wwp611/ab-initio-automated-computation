@@ -90,22 +90,20 @@ bash dp_pipeline/submit_dp_scf.sh <material>
 python dp_pipeline/prepare_dp_band_inputs.py <material>
 bash dp_pipeline/submit_dp_band.sh <material>
 ```
+## debug.sh文件
+- `dp_pipeline/debug_scf(band).sh`
+  - `debug_scf.sh`：批量修改并重提 SCF 计算
+  - `debug_band.sh`：批量修改并重提能带（band）计算
 
-## 结果提取与形变势计算
-在计算完成后执行：
+### 用法
+- scf
+  bash debug_scf.sh 材料名
+  bash debug_scf.sh 材料名 undef 0.02P
 
-```bash
-# 提取能带关键数据
-python dp_pipeline/DP.py
-
-# 计算形变势
-python dp_pipeline/calc_deformation_potential.py
-```
-
-输出文件：
-- `band_key_results.csv`：包含各应变下的 `ln(体积)`、`VBM/CBM` 等。
-- `deformation_potential.csv`：Ev/Ec 形变势及 R2。
-
+- BAND
+  bash debug_band.sh 材料名
+  bash debug_band.sh 材料名 undef 0.02P
+  
 ## 可配置项
 - `dp_pipeline/auto_calcu.py`
   - `N_BATCH`：每轮提交的材料数。
